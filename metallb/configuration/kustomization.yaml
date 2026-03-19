@@ -1,0 +1,6 @@
+namespace: metallb-system
+
+resources:
+  - ./peer.yaml
+  - ./ipaddresspool.yaml
+  - ./bgpadvertisement.yaml

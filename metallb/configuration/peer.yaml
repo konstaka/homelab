@@ -1,0 +1,8 @@
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: dmzrouter
+spec:
+  peerAddress: 10.2.0.1
+  peerASN: 65551
+  myASN: 64513
