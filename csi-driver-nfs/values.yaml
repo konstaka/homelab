@@ -1,0 +1,18 @@
+csi-driver-nfs:
+  controller:
+    replicas: 2
+
+  storageClass:
+    create: true
+    name: nfs-default
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "true"
+    parameters:
+      server: storage1.internal
+      share: /data/k8s
+      subDir: "${pvc.metadata.namespace}/${pvc.metadata.name}"
+      mountPermissions: "0777"
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    mountOptions:
+      - nfsvers=4.2
