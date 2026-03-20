@@ -1,32 +1,21 @@
 # Homelab GitOps repository
 
-Bootstrap-ready definitions of what's running in my home cluster of 1 control plane node and 2 worker nodes.
+Bootstrap-ready definitions of what's deployed in my home cluster of 1 control plane node and 2 worker nodes, running on a repurposed workstation behind my fridge.
 
 ## Infrastructure stack
 
-### Proxmox 9.1.4
-
-Hosts the router and cluster nodes as VMs. Runs on a repurposed workstation behind my fridge.
-
-### OPNsense 26.1.4
-
-Router/firewall to segment the network, provide a WireGuard VPN tunnel for management, and manage BGP peerings with the worker nodes for load balancing.
-
-### Talos Linux 1.12.5
-
-Kubernetes-focused OS installed on the cluster nodes.
-
-### MetalLB 0.15.3
-
-Network load balancer that will automatically assign external IPs for LoadBalancer resources.
-
-### Traefik Proxy 3.6.11
-
-Installed as ingress controller to route incoming http(s) traffic to services and manage the TLS certificates.
-
-### Pangolin
-
-Identity-aware reverse proxy installed on a VPS outside of my home infrastructure to publish the services.
+| Thing                       | Version |
+| --------------------------- | ------- |
+| Proxmox Virtual Environment | 9.1.4   |
+| OPNsense                    | 26.1.4  |
+| Talos Linux                 | 1.12.5  |
+| talosctl                    | 1.12.5  |
+| MetalLB                     | 0.15.3  |
+| Traefik Proxy               | 3.6.11  |
+| kubectl                     | 1.35.3  |
+| Kustomize                   | 5.7.1   |
+| Kubernetes                  | 1.35.2  |
+| Helm                        | 4.1.3   |
 
 ## Bootstrap a cluster
 
@@ -60,9 +49,9 @@ helm template traefik -n traefik | kubectl apply -f -
 
 Now we can add service and ingress files to apps to expose them in a more controlled manner.
 
-### Storage
+### Storage (next: Longhorn/Piraeus? CloudNativePG?)
 
-To get persistent storage in a cluster, it needs to have some backend. For now, since everything happens on the same machine, let's use a single storage VM serving NFS.
+To get persistent storage in a cluster, it needs to have some backend - the initial node-attached disks are to be considered ephemeral. For now, since everything happens on the same machine, let's use a single storage VM serving NFS.
 
 Install the NFS CSI driver with a default storage class configured, pointing to the NFS server:
 
@@ -76,4 +65,9 @@ Now there is a distributed storage backend in the cluster. Test everything with:
 helm template helloworld | kubectl apply -f -
 kubectl logs -n helloworld pod/test-pod
 curl 10.2.2.10/helloworld
+```
+
+#### Database
+
+In a similar fashion, to get things moving, let's make use of a non-HA, centralised database server. I'll use PostgreSQL since it's a very common requirement of various applications.
 ```
