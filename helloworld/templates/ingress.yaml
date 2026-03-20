@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: hello-k8s
-  namespace: helloworld
+  name: "{{ .Values.name }}"
+  namespace: "{{ .Values.namespace }}"
 spec:
 spec:
   rules:
@@ -12,6 +12,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: hello-k8s
+                name: "{{ .Values.name }}"
                 port:
                   number: 80
