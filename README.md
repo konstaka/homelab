@@ -4,27 +4,33 @@ Bootstrap-ready definitions of what's running in my home cluster of 1 control pl
 
 ## Infrastructure stack
 
-### Proxmox
+### Proxmox 9.1.4
 
 Hosts the router and cluster nodes as VMs. Runs on a repurposed workstation behind my fridge.
 
-### OPNsense
+### OPNsense 26.1.4
 
 Router/firewall to segment the network, provide a WireGuard VPN tunnel for management, and manage BGP peerings with the worker nodes for load balancing.
 
-### MetalLB
+### Talos Linux 1.12.5
+
+Kubernetes-focused OS installed on the cluster nodes.
+
+### MetalLB 0.15.3
 
 Network load balancer that will automatically assign external IPs for LoadBalancer resources.
 
-### Talos Linux
+### Traefik Proxy 3.6.11
 
-Kubernetes-focused OS installed on the cluster nodes.
+Installed as ingress controller to route incoming http(s) traffic to services and manage the TLS certificates.
 
 ### Pangolin
 
 Identity-aware reverse proxy installed on a VPS outside of my home infrastructure to publish the services.
 
 ## Bootstrap a cluster
+
+Create nodes as desired and install the Talos image on each as per the docs. Assign the nodes static IPs on the router and add them as BGP neighbours.
 
 ### Load balancing
 
@@ -41,3 +47,13 @@ kubectl apply -k metallb/configuration
 ```
 
 The cluster is now ready to assign external IPs to load balancer services.
+
+### Ingress
+
+Install Traefik with
+
+```
+helm template traefik -n traefik | kubectl apply -f -
+```
+
+Now we can add service and ingress files to apps to expose them in a more controlled manner.
