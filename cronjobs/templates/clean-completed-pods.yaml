@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: clean-completed-pods
+  namespace: "{{ .Values.namespace }}"
+spec:
+  schedule: "@midnight"
+  timeZone: "Etc/UTC"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: clean-succeeded-pods
+              image: bitnami/kubectl:latest
+              command:
+                - /bin/sh
+                - -c
+                - kubectl delete pod -A --field-selector status.phase=Succeeded
+            - name: clean-failed-pods
+              image: bitnami/kubectl:latest
+              command:
+                - /bin/sh
+                - -c
+                - kubectl delete pod -A --field-selector status.phase=Failed
+          restartPolicy: OnFailure
