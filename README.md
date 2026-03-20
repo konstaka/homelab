@@ -21,7 +21,7 @@ Bootstrap-ready definitions of what's deployed in my home cluster of 1 control p
 
 Create nodes as desired and install the Talos image on each as per the docs. Assign the nodes static IPs on the router and add them as BGP neighbours.
 
-I like to keep things reproducible. Therefore, I try to keep all versions of everything installed in the cluster in git by either making Kustomizations with remote resources or setting up Helm subcharts.
+I like to keep things reproducible. Therefore, I try to keep all versions of everything installed in the cluster in git by either making Kustomizations with remote resources or setting up Helm subcharts. I also plan on using GitOps patterns later to manage the infrastructure itself, so having dangling Helm releases in the cluster would only confuse things.
 
 ### Load balancing
 
@@ -44,6 +44,7 @@ The cluster is now ready to assign external IPs to load balancer services.
 Install Traefik with
 
 ```
+helm dep update traefik
 helm template traefik -n traefik | kubectl apply -f -
 ```
 
@@ -56,6 +57,7 @@ To get persistent storage in a cluster, it needs to have some backend - the init
 Install the NFS CSI driver with a default storage class configured, pointing to the NFS server:
 
 ```
+helm dep update csi-driver-nfs
 helm template csi-driver-nfs -n kube-system | kubectl apply -f -
 ```
 
@@ -70,4 +72,14 @@ curl 10.2.2.10/helloworld
 #### Database
 
 In a similar fashion, to get things moving, let's make use of a non-HA, centralised database server. I'll use PostgreSQL since it's a very common requirement of various applications.
+
+### Reverse proxy
+
+I have Pangolin installed on an external VPS, where my public DNS records are also pointed. By installing Newt in the cluster, we can expose its services to the internet through Pangolin.
+
+```
+helm dep update newt
+kubectl apply -f newt/templates/namespace.yaml
+kubectl create secret generic newt-cred -n newt --from-env-file=newt-credentials.env
+helm template newt -n newt | kubectl apply -n newt -f -
 ```
