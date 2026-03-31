@@ -2,20 +2,53 @@
 
 Bootstrap-ready definitions of what's deployed in my home cluster of 1 control plane node and 2 worker nodes, running on a repurposed workstation behind my fridge.
 
+This is my playground to try out different components and patterns before applying them in production clusters.
+
 ## Infrastructure stack
 
-| Thing                       | Version |
+| Component                   | Version |
 | --------------------------- | ------- |
 | Proxmox Virtual Environment | 9.1.4   |
 | OPNsense                    | 26.1.4  |
 | Talos Linux                 | 1.12.5  |
 | talosctl                    | 1.12.5  |
-| MetalLB                     | 0.15.3  |
-| Traefik Proxy               | 3.6.11  |
 | kubectl                     | 1.35.3  |
 | Kustomize                   | 5.7.1   |
 | Kubernetes                  | 1.35.2  |
 | Helm                        | 4.1.3   |
+
+The rest of the versions are pinned in the respective Helm subcharts or kustomizations.
+
+## Architecture
+
+```mermaid
+architecture-beta
+    group pve(server)[pve]
+    group vps(server)[vps]
+
+    service router(internet)[router] in pve
+    service control1(cloud)[control1] in pve
+    service worker1(cloud)[worker1] in pve
+    service worker2(cloud)[worker2] in pve
+    service nfs(disk)[nfs] in pve
+    service pg(database)[pg] in pve
+    junction clusterbus
+    junction dmzbus1
+    junction dmzbus2
+    service pangolin(cloud)[pangolin] in vps
+    service newt(cloud)[newt] in pve
+
+    router:R -- L:dmzbus1
+    dmzbus1:R -- L:dmzbus2
+    dmzbus2:R -- L:clusterbus
+    control1:B -- T:clusterbus
+    worker1:T -- B:clusterbus
+    worker2:L -- R:clusterbus
+    nfs:T -- B:dmzbus2
+    pg:T -- B:dmzbus1
+    pangolin:B -- T:newt
+    newt:R -- L:router
+```
 
 ## Bootstrap a cluster
 
@@ -39,6 +72,10 @@ kubectl apply -k metallb/configuration
 
 The cluster is now ready to assign external IPs to load balancer services.
 
+#### Reverse proxy
+
+I have Pangolin installed on an external VPS, where my public DNS records are also pointed. The wireguard tunnel terminates behind the OPNsense router, so additionally port forwarding needs to be set up for the tunnel to reach the load balancer(s).
+
 ### Ingress
 
 Install Traefik with
@@ -50,9 +87,7 @@ helm template traefik -n traefik | kubectl apply -f -
 
 Now we can add service and ingress files to apps to expose them in a more controlled manner.
 
-### Storage (next: Longhorn/Piraeus? CloudNativePG?)
-
-To get persistent storage in a cluster, it needs to have some backend - the initial node-attached disks are to be considered ephemeral. For now, since everything happens on the same machine, let's use a single storage VM serving NFS.
+### Storage
 
 Install the NFS CSI driver with a default storage class configured, pointing to the NFS server:
 
@@ -61,25 +96,22 @@ helm dep update csi-driver-nfs
 helm template csi-driver-nfs -n kube-system | kubectl apply -f -
 ```
 
-Now there is a distributed storage backend in the cluster. Test everything with:
+Now there is a distributed storage backend in the cluster.
+
+### Test everything with:
 
 ```
 helm template helloworld | kubectl apply -f -
 kubectl logs -n helloworld pod/test-pod
-curl 10.2.2.10/helloworld
+curl 10.2.2.10
 ```
 
-#### Database
+## TODO
 
-In a similar fashion, to get things moving, let's make use of a non-HA, centralised database server. I'll use PostgreSQL since it's a very common requirement of various applications.
+### Storage
 
-### Reverse proxy
+For now, since everything happens on the same machine, I'll use a single storage VM serving NFS. In the future, it might make sense to add a cloud native storage solution like Longhorn or Piraeus.
 
-I have Pangolin installed on an external VPS, where my public DNS records are also pointed. By installing Newt in the cluster, we can expose its services to the internet through Pangolin.
+### Database
 
-```
-helm dep update newt
-kubectl apply -f newt/templates/namespace.yaml
-kubectl create secret generic newt-cred -n newt --from-env-file=newt-credentials.env
-helm template newt -n newt | kubectl apply -n newt -f -
-```
+In a similar fashion, to get things moving, I'll make use of a non-HA, centralised database server. I'll use PostgreSQL since it's a very common requirement of various applications, and paves way for a possible future CloudNativePG deployment.

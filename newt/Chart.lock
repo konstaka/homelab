@@ -1,6 +1,0 @@
-dependencies:
-- name: newt
-  repository: https://charts.fossorial.io
-  version: 1.2.0
-digest: sha256:850661e2e38a19f24a004a4ef06409b8ee103d65c598326c8dfaccdd8a13851c
-generated: "2026-03-20T23:12:59.600269166+01:00"
