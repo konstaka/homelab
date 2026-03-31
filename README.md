@@ -32,6 +32,7 @@ architecture-beta
     service worker2(cloud)[worker2] in pve
     service nfs(disk)[nfs] in pve
     service pg(database)[pg] in pve
+    service git(cloud)[git] in pve
     junction clusterbus
     junction dmzbus1
     junction dmzbus2
@@ -46,6 +47,7 @@ architecture-beta
     worker2:L -- R:clusterbus
     nfs:T -- B:dmzbus2
     pg:T -- B:dmzbus1
+    git:B -- T:dmzbus1
     pangolin:B -- T:newt
     newt:R -- L:router
 ```
