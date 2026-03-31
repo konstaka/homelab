@@ -1,8 +1,6 @@
 # Homelab GitOps repository
 
-Bootstrap-ready definitions of what's deployed in my home cluster of 1 control plane node and 2 worker nodes, running on a repurposed workstation behind my fridge.
-
-This is my playground to try out different components and patterns before applying them in production clusters.
+Bootstrap-ready definitions of what's deployed in my home cluster of 1 control plane node and 2 worker nodes, running on a repurposed workstation behind my fridge. This is my playground to try out different components and patterns before applying them in production clusters.
 
 ## Infrastructure stack
 
@@ -25,29 +23,31 @@ The rest of the versions are pinned in the respective Helm subcharts or kustomiz
 architecture-beta
     group pve(server)[pve]
     group vps(server)[vps]
+    group newtnet(cloud)[newt] in pve
+    group cluster(cloud)[cluster] in pve
 
     service router(internet)[router] in pve
-    service control1(cloud)[control1] in pve
-    service worker1(cloud)[worker1] in pve
-    service worker2(cloud)[worker2] in pve
-    service nfs(disk)[nfs] in pve
-    service pg(database)[pg] in pve
-    service git(cloud)[git] in pve
+    service control1(cloud)[control1] in cluster
+    service worker1(cloud)[worker1] in cluster
+    service worker2(cloud)[worker2] in cluster
+    service nfs(disk)[nfs] in cluster
+    service pg(database)[pg] in cluster
+    service git(cloud)[git] in cluster
     junction clusterbus
     junction dmzbus1
     junction dmzbus2
     service pangolin(cloud)[pangolin] in vps
-    service newt(cloud)[newt] in pve
+    service newt(cloud)[newt] in newtnet
 
     router:R -- L:dmzbus1
     dmzbus1:R -- L:dmzbus2
-    dmzbus2:R -- L:clusterbus
+    dmzbus2:B -- L:clusterbus
     control1:B -- T:clusterbus
     worker1:T -- B:clusterbus
     worker2:L -- R:clusterbus
-    nfs:T -- B:dmzbus2
-    pg:T -- B:dmzbus1
-    git:B -- T:dmzbus1
+    nfs:B -- T:dmzbus2
+    pg:B -- T:dmzbus1
+    git:T -- B:dmzbus1
     pangolin:B -- T:newt
     newt:R -- L:router
 ```
@@ -57,6 +57,8 @@ architecture-beta
 Create nodes as desired and install the Talos image on each as per the docs. Assign the nodes static IPs on the router and add them as BGP neighbours.
 
 I like to keep things reproducible. Therefore, I try to keep all versions of everything installed in the cluster in git by either making Kustomizations with remote resources or setting up Helm subcharts. I also plan on using GitOps patterns later to manage the infrastructure itself, so having dangling Helm releases in the cluster would only confuse things.
+
+Hosting the homelab repo itself in the cluster is out of scope for practical purposes. Having it on a separate machine makes deploying new clusters much easier, and [Forgejo isn't HA-ready anyway](https://code.forgejo.org/forgejo-helm/forgejo-helm/src/branch/main/docs/ha-setup.md), so for now it can stay on a docker host. With a split horizon DNS setup, the nodes can reach the forge without unnecessary hairpins.
 
 ### Load balancing
 
