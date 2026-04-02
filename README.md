@@ -102,30 +102,33 @@ helm template csi-driver-nfs csi-driver-nfs -n kube-system | kubectl apply -f -
 
 Now there is a distributed storage backend in the cluster.
 
-### Test everything with:
-
-```
-helm template helloworld helloworld | kubectl apply -f -
-kubectl logs -n helloworld pod/test-pod
-curl 10.2.2.10
-```
-
 ### ArgoCD
 
 ArgoCD's' CRDs exceed the size limit for `kubectl apply`, so `--server-side` is needed. `--force-conflicts` is needed for reliable upgrades, so I'll include it already.
 
-Bootstrap the GitOps process with:
-
 ```
 helm dep update argocd
 helm template argocd argocd -n argocd | kubectl apply --server-side --force-conflicts -f -
+```
+
+Wait for the pods to spin up and get the admin password:
+
+```
+kubectl get pods -n argocd -w
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+```
+
+Bootstrap the GitOps process with:
+
+```
 helm template root-app | kubectl apply -f -
 ```
 
-Login with 'admin' and the initial password from:
+### Test everything with:
 
 ```
-kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+kubectl logs -n helloworld pod/test-pod
+curl 10.2.2.10
 ```
 
 ## TODO
