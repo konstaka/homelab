@@ -11,12 +11,10 @@ spec:
     path: toolbox
     targetRevision: HEAD
   destination:
-    namespace: toolbox
+    namespace: default
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
