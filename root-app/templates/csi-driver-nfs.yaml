@@ -1,24 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hello-k8s
+  name: csi-driver-nfs
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   source:
     repoURL: http://git.internal/konstaka/homelab.git
-    path: helloworld
+    path: csi-driver-nfs
     targetRevision: HEAD
   destination:
-    namespace: helloworld
+    namespace: kube-system
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
