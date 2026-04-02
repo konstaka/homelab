@@ -117,6 +117,7 @@ ArgoCD's' CRDs exceed the size limit for `kubectl apply`, so `--server-side` is 
 ```
 helm dep update argocd
 helm template argocd argocd -n argocd | kubectl apply --server-side --force-conflicts -f -
+helm template root-app | kubectl apply -f -
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
 
