@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hello-k8s
+  name: traefik
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   source:
     repoURL: http://git.internal/konstaka/homelab.git
-    path: helloworld
+    path: traefik
     targetRevision: HEAD
   destination:
-    namespace: helloworld
+    namespace: traefik
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:
