@@ -54,9 +54,9 @@ architecture-beta
 
 ## Bootstrap a cluster
 
-Create nodes as desired and install the Talos image on each as per the docs. Assign the nodes static IPs on the router and add them as BGP neighbours.
+Create nodes as desired and install the Talos image on each as per the docs. Assign the nodes static IPs on the router and add them as BGP neighbours for the MetalLB setup.
 
-I like to keep things reproducible. Therefore, I try to keep all versions of everything installed in the cluster in git by either making Kustomizations with remote resources or setting up Helm subcharts. I also plan on using GitOps patterns later to manage the apps, so having dangling Helm releases in the cluster would only confuse things, hence the choice for no `helm install` in this project.
+I like to keep things reproducible. Therefore, I try to keep all versions of everything installed in the cluster in git by either making Kustomizations with remote resources or setting up Helm subcharts. With ArgoCD in place, having dangling Helm releases in the cluster would only confuse things, hence the choice for no `helm install` in this project.
 
 Hosting the homelab repo itself in the cluster is out of scope for practical purposes. Having it on a separate machine makes deploying new clusters much easier, and [Forgejo isn't HA-ready anyway](https://code.forgejo.org/forgejo-helm/forgejo-helm/src/branch/main/docs/ha-setup.md), so for now it can stay on a docker host.
 
@@ -114,10 +114,17 @@ curl 10.2.2.10
 
 ArgoCD's' CRDs exceed the size limit for `kubectl apply`, so `--server-side` is needed. `--force-conflicts` is needed for reliable upgrades, so I'll include it already.
 
+Bootstrap the GitOps process with:
+
 ```
 helm dep update argocd
 helm template argocd argocd -n argocd | kubectl apply --server-side --force-conflicts -f -
 helm template root-app | kubectl apply -f -
+```
+
+Login with 'admin' and the initial password from:
+
+```
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
 
