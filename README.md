@@ -99,7 +99,7 @@ kubectl get pods -n argocd -w
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
 
-Bootstrap the GitOps process with:
+Kick off the GitOps process with:
 
 ```
 helm template root-app | kubectl apply -f -
