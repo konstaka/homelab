@@ -1,0 +1,6 @@
+argo-cd:
+  server:
+    service:
+      type: LoadBalancer
+      annotations:
+        metallb.io/loadBalancerIPs: 10.2.2.11
