@@ -80,17 +80,6 @@ The cluster is now ready to assign external IPs to load balancer services.
 
 I have Pangolin installed on an external VPS, where my public DNS records are also pointed. The wireguard tunnel terminates behind the OPNsense router, so additionally port forwarding needs to be set up for the tunnel to reach the load balancer(s).
 
-### Ingress
-
-Install Traefik with
-
-```
-helm dep update traefik
-helm template traefik traefik -n traefik | kubectl apply -f -
-```
-
-Now we can add service and ingress files to apps to expose them in a more controlled manner.
-
 ### Storage
 
 Install the NFS CSI driver with a default storage class configured, pointing to the NFS server:
