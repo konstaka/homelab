@@ -61,15 +61,17 @@ architecture-beta
 
 #### If starting from scratch: Network setup with MetalLB
 
-1. After installing the Talos image on each node, assign static IPs on the router and add them as BGP neighbours for the MetalLB setup as per the [OPNsense docs](https://docs.opnsense.org/manual/dynamic_routing.html).
+1. Ensure network connectivity from your workstation to the network where the nodes will be created. E.g. set up a VPN tunnel to the router and allow traffic from that tunnel to the cluster network.
 
-2. Install MetalLB to support creating LoadBalancer services in the cluster.
+2. After installing the Talos image on each node, assign static IPs on the router and add them as BGP neighbours for the MetalLB setup as per the [OPNsense docs](https://docs.opnsense.org/manual/dynamic_routing.html).
+
+3. Install MetalLB to support creating LoadBalancer services in the cluster.
 
    ```
    kubectl apply -k metallb/installation
    ```
 
-3. Allow it a little bit of time to settle in, then apply the BGP setup with
+4. Allow it a little bit of time to settle in, then apply the BGP setup with
 
    ```
    kubectl apply -k metallb/configuration
