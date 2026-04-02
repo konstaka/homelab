@@ -86,7 +86,7 @@ Install Traefik with
 
 ```
 helm dep update traefik
-helm template traefik -n traefik | kubectl apply -f -
+helm template traefik traefik -n traefik | kubectl apply -f -
 ```
 
 Now we can add service and ingress files to apps to expose them in a more controlled manner.
@@ -97,7 +97,7 @@ Install the NFS CSI driver with a default storage class configured, pointing to 
 
 ```
 helm dep update csi-driver-nfs
-helm template csi-driver-nfs -n kube-system | kubectl apply -f -
+helm template csi-driver-nfs csi-driver-nfs -n kube-system | kubectl apply -f -
 ```
 
 Now there is a distributed storage backend in the cluster.
@@ -105,7 +105,7 @@ Now there is a distributed storage backend in the cluster.
 ### Test everything with:
 
 ```
-helm template helloworld | kubectl apply -f -
+helm template helloworld helloworld | kubectl apply -f -
 kubectl logs -n helloworld pod/test-pod
 curl 10.2.2.10
 ```
@@ -116,7 +116,7 @@ ArgoCD's' CRDs exceed the size limit for `kubectl apply`, so `--server-side` is 
 
 ```
 helm dep update argocd
-helm template argocd -n argocd | kubectl apply --server-side --force-conflicts -f -
+helm template argocd argocd -n argocd | kubectl apply --server-side --force-conflicts -f -
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
 
