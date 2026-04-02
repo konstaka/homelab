@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: hello-k8s
-  namespace: helloworld
+  namespace: argocd
 spec:
   source:
     repoURL: http://git.internal/konstaka/homelab.git
