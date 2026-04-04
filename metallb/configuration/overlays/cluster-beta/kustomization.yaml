@@ -1,0 +1,18 @@
+namespace: metallb-system
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      group: metallb.io
+      version: v1beta1
+      kind: IPAddressPool
+      name: servicepool
+    path: ipaddresspool.yaml
+  - target:
+      group: metallb.io
+      version: v1beta2
+      kind: BGPPeer
+      name: router
+    path: peer.yaml

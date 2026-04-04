@@ -1,0 +1,9 @@
+- op: add
+  path: /spec/peerAddress
+  value: 192.168.3.1
+- op: add
+  path: /spec/peerASN
+  value: 65552
+- op: add
+  path: /spec/myASN
+  value: 64514

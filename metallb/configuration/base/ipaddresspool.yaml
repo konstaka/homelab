@@ -3,5 +3,4 @@ kind: IPAddressPool
 metadata:
   name: servicepool
 spec:
-  addresses:
-    - 10.2.2.10-10.2.2.20
+  addresses: []

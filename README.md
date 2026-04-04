@@ -71,14 +71,14 @@ architecture-beta
 3. Install MetalLB to support creating LoadBalancer services in the cluster.
 
    ```
-   kubectl apply -k metallb/installation
+   kubectl apply -k metallb/installation/overlays/cluster-***
    ```
 
 4. Allow it a little bit of time to settle in, then apply the BGP setup.
 
    ```
    kubectl get pods -n metallb-system -w
-   kubectl apply -k metallb/configuration
+   kubectl apply -k metallb/configuration/overlays/cluster-***
    ```
 
    The cluster is now ready to assign external IPs to LoadBalancer services.
