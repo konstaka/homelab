@@ -4,6 +4,7 @@ metadata:
   name: argocd
   namespace: argocd
 spec:
+  project: default
   source:
     repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
     path: argocd
@@ -11,7 +12,6 @@ spec:
   destination:
     namespace: argocd
     server: https://kubernetes.default.svc
-  project: default
   syncPolicy:
     automated:
       prune: true
