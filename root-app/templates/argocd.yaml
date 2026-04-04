@@ -8,9 +8,6 @@ spec:
     repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
     path: argocd
     targetRevision: HEAD
-    helm:
-      valueFiles:
-        - environments/values-beta.yaml
   destination:
     namespace: argocd
     server: https://kubernetes.default.svc
