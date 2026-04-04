@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   source:
-    repoURL: http://git.internal/konstaka/homelab.git
+    repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
     path: root-app
     targetRevision: HEAD
   destination:

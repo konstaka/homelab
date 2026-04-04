@@ -1,0 +1,9 @@
+argo-cd:
+  server:
+    service:
+      type: LoadBalancer
+      annotations:
+        metallb.io/loadBalancerIPs: 192.168.3.11
+
+gitBaseURL: http://192.168.3.102:3000
+gitNamespace: appelstroopwafel

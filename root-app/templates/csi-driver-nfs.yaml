@@ -7,12 +7,12 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   source:
-    repoURL: http://git.internal/konstaka/homelab.git
+    repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
     path: csi-driver-nfs
     targetRevision: HEAD
     helm:
       valueFiles:
-        - environments/values-alpha.yaml
+        - environments/values-beta.yaml
   destination:
     namespace: kube-system
     server: https://kubernetes.default.svc

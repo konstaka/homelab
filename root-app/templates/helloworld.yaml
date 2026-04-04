@@ -9,7 +9,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   source:
-    repoURL: http://git.internal/konstaka/homelab.git
+    repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
     path: helloworld
     targetRevision: HEAD
   destination:
