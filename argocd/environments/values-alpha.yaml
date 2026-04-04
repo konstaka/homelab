@@ -1,0 +1,13 @@
+argo-cd:
+  configs:
+    params:
+      # TLS is terminated at the load balancer
+      server.insecure: "true"
+  server:
+    service:
+      type: LoadBalancer
+      annotations:
+        metallb.io/loadBalancerIPs: 10.2.2.11
+
+gitBaseURL: http://git.internal
+gitNamespace: konstaka

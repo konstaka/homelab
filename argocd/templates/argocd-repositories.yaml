@@ -7,5 +7,5 @@ metadata:
     argocd.argoproj.io/secret-type: repository
 stringData:
   type: git
-  url: http://git.internal/konstaka/homelab.git
+  url: "{{ .Values.gitBaseURL }}/{{ .Values.gitNamespace }}/homelab.git"
   project: default

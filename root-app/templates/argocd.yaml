@@ -8,6 +8,9 @@ spec:
     repoURL: http://git.internal/konstaka/homelab.git
     path: argocd
     targetRevision: HEAD
+    helm:
+      valueFiles:
+        - environments/values-alpha.yaml
   destination:
     namespace: argocd
     server: https://kubernetes.default.svc

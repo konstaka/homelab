@@ -10,6 +10,9 @@ spec:
     repoURL: http://git.internal/konstaka/homelab.git
     path: csi-driver-nfs
     targetRevision: HEAD
+    helm:
+      valueFiles:
+        - environments/values-alpha.yaml
   destination:
     namespace: kube-system
     server: https://kubernetes.default.svc
