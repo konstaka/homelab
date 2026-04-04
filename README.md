@@ -16,6 +16,16 @@ Bootstrap-ready definitions of what's deployed in my homelab of two clusters, ru
 
 The rest of the versions are pinned in the respective Helm subcharts or kustomizations.
 
+## Clusters
+
+### Alpha
+
+"DMZ" cluster serving as application platform for publicly exposed services. Currently 1+2 nodes.
+
+### Beta
+
+"Main" cluster serving as a hub with ArgoCD deployed. Currently 3+2 nodes.
+
 ## Architecture
 
 ```mermaid
