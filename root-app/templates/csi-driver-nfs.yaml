@@ -1,23 +1,34 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: csi-driver-nfs
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
-  source:
-    repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
-    path: csi-driver-nfs
-    targetRevision: HEAD
-    helm:
-      valueFiles:
-        - environments/values-beta.yaml
-  destination:
-    namespace: kube-system
-    server: https://kubernetes.default.svc
-  project: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - cluster: alpha
+            url: https://kube.cluster-alpha.home.arpa:6443
+          - cluster: beta
+            url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: "csi-driver-nfs-{{`{{ .cluster }}`}}"
+    spec:
+      project: default
+      source:
+        repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
+        path: csi-driver-nfs
+        targetRevision: HEAD
+        helm:
+          valueFiles:
+            - "environments/values-{{`{{ .cluster }}`}}.yaml"
+      destination:
+        namespace: kube-system
+        server: "{{`{{ .url }}`}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
