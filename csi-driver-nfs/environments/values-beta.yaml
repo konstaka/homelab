@@ -1,5 +1,5 @@
 csi-driver-nfs:
   storageClass:
     parameters:
-      server: 192.168.3.2
+      server: 192.168.3.98
       share: /ssd/k8s
