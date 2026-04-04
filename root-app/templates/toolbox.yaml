@@ -1,20 +1,31 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: toolbox
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
-  source:
-    repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
-    path: toolbox
-    targetRevision: HEAD
-  destination:
-    namespace: default
-    server: https://kubernetes.default.svc
-  project: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - cluster: alpha
+            url: https://kube.cluster-alpha.home.arpa:6443
+          - cluster: beta
+            url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: toolbox
+    spec:
+      project: default
+      source:
+        repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
+        path: toolbox
+        targetRevision: HEAD
+      destination:
+        namespace: default
+        server: "{{ .url }}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
