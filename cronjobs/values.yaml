@@ -1,2 +1,2 @@
 namespace: cronjobs
-staging: true
+staging: false
