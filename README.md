@@ -128,7 +128,7 @@ helm template root-app | kubectl apply -f -
 ### Test everything with:
 
 ```
-kubectl logs -n helloworld pod/test-pod
+kubectl logs -l app=test-deployment -n helloworld
 curl 192.168.3.10
 curl 10.2.2.10
 ```
