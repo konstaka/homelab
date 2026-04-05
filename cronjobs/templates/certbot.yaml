@@ -45,5 +45,8 @@ spec:
                     --dry-run=client \
                     -o yaml \
                     | kubectl apply -f -
+                  kubectl get secret argocd-server-tls -n argocd -o json \
+                   | jq '{apiVersion: .apiVersion, kind: .kind, metadata: {name: "default-tls"}, type: .type, data: .data}' \
+                   | kubectl apply -n traefik -f -
                   EOF
           restartPolicy: Never
