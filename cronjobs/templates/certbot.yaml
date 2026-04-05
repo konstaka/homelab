@@ -45,4 +45,4 @@ spec:
                     -o yaml \
                     | kubectl apply -f -
                   EOF
-          restartPolicy: OnFailure
+          restartPolicy: Never
