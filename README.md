@@ -20,11 +20,11 @@ The rest of the versions are pinned in the respective Helm subcharts or kustomiz
 
 ### Alpha
 
-"DMZ" cluster serving as application platform for publicly exposed services. Currently 1+2 nodes.
+"DMZ" cluster serving as application platform for publicly exposed services. Currently 1+2 nodes. There's [another reverse proxy](https://pangolin.net/) in front of this cluster, so Traefik doesn't need certs.
 
 ### Beta
 
-"Main" cluster serving as a hub with ArgoCD deployed. Currently 3+2 nodes.
+"Main" cluster serving as a hub with ArgoCD and certificate management. Currently 3+2 nodes. Only accessible from my network.
 
 ## Architecture
 
@@ -57,11 +57,14 @@ architecture-beta
 
 ## My setup: Multiple clusters managed via one ArgoCD instance (hub and spoke)
 
+If you want to run my cluster, here's how. This also serves as documentation for my future self in case I need to rebuild.
+
 ### Prerequisites
 
 - kubectl
 - Helm
 - Kubernetes cluster(s) with cloud load balancer support. I currently use [Talos Linux](https://docs.siderolabs.com/talos/v1.12/overview/what-is-talos), [OPNsense](https://opnsense.org/), and [MetalLB](https://metallb.io/) on [Proxmox](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview) to achieve this, your setup may be fancier.
+- A git repository accessible via http(s) - github will do, I use gitea/forgejo internally.
 
 #### If starting from scratch: Network setup with MetalLB
 
@@ -94,7 +97,7 @@ I like to keep things reproducible. Therefore, I try to keep all versions of eve
 
 Hosting the homelab repo itself in-cluster is out of scope for practical purposes at this time. [Forgejo isn't HA-ready anyway](https://code.forgejo.org/forgejo-helm/forgejo-helm/src/branch/main/docs/ha-setup.md), so for now it can stay on a separate docker host.
 
-### Install ArgoCD and App of Apps on the main cluster (hub)
+### Install ArgoCD on the main cluster (hub)
 
 ArgoCD's' CRDs exceed the size limit for `kubectl apply`, so `--server-side` is needed. `--force-conflicts` is needed for reliable upgrades, so I'll include it already.
 
@@ -119,16 +122,50 @@ argocd login 192.168.3.11
 argocd cluster add admin@talos-cluster-alpha
 ```
 
-### Start the GitOps loop
+### Install App of Apps on the main cluster
+
+Kick off the GitOps loop with:
 
 ```
 helm template root-app | kubectl apply -f -
 ```
 
-### Test everything with:
+The root-app will also watch itself, so any new applications should be registered automatically.
+
+See if everything spins up:
 
 ```
 kubectl logs -l app=test-deployment -n helloworld
 curl 192.168.3.10
 curl 10.2.2.10
+```
+
+### Configure certbot
+
+I have a custom cronjob to keep my main cluster's certificates fresh, with mild inspiration from [this solution](https://github.com/nabsul/k8s-letsencrypt). I use deSEC for DNS and make use of DNS-01 with [zone delegation](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge).
+
+To get started, for lack of a better secrets management system, put the deSEC token into a hidden values.yaml file and apply it to the cluster:
+
+```
+helm template secrets -f private/acme-creds.yaml | kubectl apply -f -
+```
+
+The certbot job is idempotent (though beware of Let's Encrypt rate limits). Launch it once manually to create the first certificate, either from the ArgoCD UI or by running:
+
+```
+kubectl create job certbot-initial --from cronjob/certbot
+```
+
+...unless it's exactly Sunday 2pm, in which case the job will already be running on its own. I was making this at exactly 2pm UTC on a Sunday, on literally the same second, and believe me I was confused.
+
+Create the relevant A records in Unbound DNS and test with:
+
+```
+curl https://argocd.konstakanniainen.dev
+```
+
+The padlock is happy, we're good to go. Traefik endpoints should also automatically have access to the certificate. Test it with:
+
+```
+curl https://hello-beta.konstakanniainen.dev
 ```
