@@ -1,2 +1,3 @@
 namespace: cronjobs
+domain: konstakanniainen.dev
 staging: false

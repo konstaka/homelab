@@ -25,7 +25,7 @@ spec:
                   python3 -m pip install certbot certbot-dns-desec
                   kubectl version
                   certbot --version
-                  DOMAIN=konstakanniainen.dev
+                  DOMAIN={{ .Values.domain }}
                   TOKEN=$(kubectl get secret desec-token -o jsonpath='{.data.token}' | base64 -d)
                   mkdir -p /etc/letsencrypt/secrets/
                   chmod 700 /etc/letsencrypt/secrets/
