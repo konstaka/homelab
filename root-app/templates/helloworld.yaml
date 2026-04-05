@@ -11,8 +11,8 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: alpha
-            url: https://kube.cluster-alpha.home.arpa:6443
+          # - cluster: alpha
+          #   url: https://kube.cluster-alpha.home.arpa:6443
           - cluster: beta
             url: https://kubernetes.default.svc
   template:
