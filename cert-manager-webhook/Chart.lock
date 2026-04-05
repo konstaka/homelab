@@ -1,6 +1,0 @@
-dependencies:
-- name: cert-manager-desec-webhook
-  repository: oci://ghcr.io/pr0ton11/helm
-  version: 0.1.1
-digest: sha256:6827a7932b24a4c1f40d3e4ef2b61ad2075eff29ec43c1b415c8e1968ce387f9
-generated: "2026-04-05T01:26:51.231540209+02:00"
