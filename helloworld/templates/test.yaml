@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test
+  name: test-deployment
+  namespace: "{{ .Values.namespace }}"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test-deployment
+  template:
+    metadata:
+      labels:
+        app: test-deployment
+    spec:
+      containers:
+        - name: test
+          image: busybox
+          command:
+            [
+              "sh",
+              "-c",
+              "echo 'NFS works' > /data/test.txt && cat /data/test.txt && sleep 3600",
+            ]
+          volumeMounts:
+            - name: nfs-data
+              mountPath: /data
+      volumes:
+        - name: nfs-data
+          persistentVolumeClaim:
+            claimName: "{{ .Values.namespace }}-nfs"
