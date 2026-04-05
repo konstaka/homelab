@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: certbot
+  namespace: "{{ .Values.namespace }}"
+spec:
+  schedule: "0 14 * * sun"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: certbot-kubectl
+              image: archlinux
+              command:
+                - sh
+                - "-c"
+                - |
+                  /bin/bash <<'EOF'
+                  yes | pacman -Syu
+                  yes | pacman -S kubectl python python-pip
+                  python -m venv venv
+                  . venv/bin/activate
+                  python3 -m pip install certbot certbot-dns-desec
+                  kubectl version
+                  certbot --version
+                  DOMAIN=konstakanniainen.dev
+                  TOKEN=$(kubectl get secret desec-token -o jsonpath='{.data.token}' | base64 -d)
+                  mkdir -p /etc/letsencrypt/secrets/
+                  chmod 700 /etc/letsencrypt/secrets/
+                  echo "dns_desec_token = $TOKEN" > /etc/letsencrypt/secrets/$DOMAIN.ini
+                  chmod 600 /etc/letsencrypt/secrets/$DOMAIN.ini
+                  certbot certonly {{ ternary "--staging " "" .Values.staging }}\
+                      --non-interactive \
+                      --agree-tos \
+                      --force-renewal \
+                      --authenticator dns-desec \
+                      --dns-desec-credentials /etc/letsencrypt/secrets/$DOMAIN.ini \
+                      --dns-desec-propagation-seconds=120 \
+                      -d "*.$DOMAIN"
+                  kubectl create -n argocd secret tls argocd-server-tls \
+                    --cert=/etc/letsencrypt/live/$DOMAIN/fullchain.pem \
+                    --key=/etc/letsencrypt/live/$DOMAIN/privkey.pem \
+                    --dry-run=client \
+                    -o yaml \
+                    | kubectl apply -f -
+                  EOF
+          restartPolicy: OnFailure
