@@ -2,21 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: test-app
+    app: test
   name: test-deployment
   namespace: "{{ .Values.namespace }}"
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: test-app
+      app: test-deployment
   template:
     metadata:
       labels:
-        app: test-app
+        app: test-deployment
     spec:
       containers:
-        - name: test-container
+        - name: test
           image: busybox
           command:
             [
