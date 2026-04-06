@@ -1,0 +1,4 @@
+certbot:
+  enabled: true
+  domain: konstakanniainen.dev
+  staging: false

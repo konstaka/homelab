@@ -1,3 +1,5 @@
 namespace: cronjobs
-domain: konstakanniainen.dev
-staging: false
+certbot:
+  enabled: false
+  domain: example.com
+  staging: true

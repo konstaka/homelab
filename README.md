@@ -57,7 +57,7 @@ architecture-beta
 
 ## My setup: Multiple clusters managed via one ArgoCD instance (hub and spoke)
 
-If you want to run my cluster, here's how. This also serves as documentation for my future self in case I need to rebuild.
+If you want to run my cluster setup, here's how. This also serves as documentation for my future self in case I need to rebuild.
 
 ### Prerequisites
 

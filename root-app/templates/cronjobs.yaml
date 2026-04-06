@@ -24,6 +24,9 @@ spec:
         repoURL: http://192.168.3.102:3000/appelstroopwafel/homelab.git
         path: cronjobs
         targetRevision: HEAD
+        helm:
+          valueFiles:
+            - "environments/values-{{`{{ .cluster }}`}}.yaml"
       destination:
         namespace: cronjobs
         server: "{{`{{ .url }}`}}"

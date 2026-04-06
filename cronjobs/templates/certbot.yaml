@@ -1,3 +1,4 @@
+{{ if .Values.certbot.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -25,13 +26,13 @@ spec:
                   python3 -m pip install certbot certbot-dns-desec
                   kubectl version
                   certbot --version
-                  DOMAIN={{ .Values.domain }}
+                  DOMAIN={{ .Values.certbot.domain }}
                   TOKEN=$(kubectl get secret desec-token -o jsonpath='{.data.token}' | base64 -d)
                   mkdir -p /etc/letsencrypt/secrets/
                   chmod 700 /etc/letsencrypt/secrets/
                   echo "dns_desec_token = $TOKEN" > /etc/letsencrypt/secrets/$DOMAIN.ini
                   chmod 600 /etc/letsencrypt/secrets/$DOMAIN.ini
-                  certbot certonly {{ ternary "--staging " "" .Values.staging }}\
+                  certbot certonly {{ ternary "--staging " "" .Values.certbot.staging }}\
                       --non-interactive \
                       --agree-tos \
                       --force-renewal \
@@ -50,3 +51,4 @@ spec:
                    | kubectl apply -n traefik -f -
                   EOF
           restartPolicy: Never
+{{ end }}
