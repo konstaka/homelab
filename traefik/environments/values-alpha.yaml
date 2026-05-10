@@ -1,4 +1,4 @@
 traefik:
   service:
     annotations:
-      metallb.io/loadBalancerIPs: 10.2.2.10
+      metallb.io/loadBalancerIPs: 10.0.150.12
