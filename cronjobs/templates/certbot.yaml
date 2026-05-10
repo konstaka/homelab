@@ -20,7 +20,7 @@ spec:
                 - |
                   /bin/bash <<'EOF'
                   yes | pacman -Syu
-                  yes | pacman -S kubectl python python-pip
+                  yes | pacman -S kubectl python python-pip jq
                   python -m venv venv
                   . venv/bin/activate
                   python3 -m pip install certbot certbot-dns-desec
