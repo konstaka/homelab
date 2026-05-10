@@ -1,9 +1,9 @@
 kind: Cluster
 name: beta
 kubernetes:
-  version: v1.36.0
+  version: v1.35.4
 talos:
-  version: v1.13.0
+  version: v1.12.7
 ---
 kind: ControlPlane
 machineClass:
