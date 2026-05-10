@@ -1,0 +1,20 @@
+kind: Cluster
+name: alpha
+kubernetes:
+  version: v1.35.3
+talos:
+  version: v1.12.6
+---
+kind: ControlPlane
+machineClass:
+  name: alpha-control-plane
+  size: 3
+systemExtensions:
+  - siderolabs/qemu-guest-agent
+---
+kind: Workers
+machineClass:
+  name: alpha-worker
+  size: 3
+systemExtensions:
+  - siderolabs/qemu-guest-agent
