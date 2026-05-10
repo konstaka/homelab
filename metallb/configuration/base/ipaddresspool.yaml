@@ -4,3 +4,4 @@ metadata:
   name: servicepool
 spec:
   addresses: []
+  avoidBuggyIPs: true

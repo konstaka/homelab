@@ -1,9 +1,9 @@
-gitBaseURL: http://192.168.3.102:3000
-gitNamespace: appelstroopwafel
+gitBaseURL: http://10.0.40.218
+gitNamespace: konstaka
 
 argo-cd:
   server:
     service:
       type: LoadBalancer
       annotations:
-        metallb.io/loadBalancerIPs: 192.168.3.11
+        metallb.io/loadBalancerIPs: 10.0.140.11
