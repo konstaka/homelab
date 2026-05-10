@@ -1,0 +1,15 @@
+metadata:
+  namespace: default
+  type: MachineClasses.omni.sidero.dev
+  id: beta-worker
+spec:
+  matchlabels: []
+  autoprovision:
+    providerid: pve2
+    providerdata: |
+      cores: 2
+      sockets: 1
+      memory: 4096
+      disk_size: 60
+      network_bridge: vlan40
+      storage_selector: name == "local-zfs3"

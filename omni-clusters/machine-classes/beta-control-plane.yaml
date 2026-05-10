@@ -1,0 +1,15 @@
+metadata:
+  namespace: default
+  type: MachineClasses.omni.sidero.dev
+  id: beta-control-plane
+spec:
+  matchlabels: []
+  autoprovision:
+    providerid: pve2
+    providerdata: |
+      cores: 2
+      sockets: 1
+      memory: 4096
+      disk_size: 40
+      network_bridge: vlan40
+      storage_selector: name == "local-lvm"
