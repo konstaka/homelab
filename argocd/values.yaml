@@ -1,4 +1,4 @@
-gitBaseURL: http://10.0.40.218
+gitBaseURL: http://dock.internal
 gitNamespace: konstaka
 
 argo-cd:
