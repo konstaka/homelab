@@ -130,7 +130,6 @@ The root-app will also watch itself, so any new applications should be registere
 See if everything spins up:
 
 ```
-kubectl logs -l app=test-deployment -n helloworld
 curl 10.0.140.11
 curl 10.0.140.12
 ```
