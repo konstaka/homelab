@@ -2,7 +2,10 @@ authentik:
   authentik:
     postgresql:
       name: authentik_alpha
+    email:
+      from: "Authentik Test <authentik@cloud.konstakanniainen.dev>"
+
   server:
     ingress:
       hosts:
-        - login-test.kohmis.fi
+        - login.konstakanniainen.dev
