@@ -1,7 +1,8 @@
 authentik:
-  postgresql:
-    name: authentik_alpha
-server:
-  ingress:
-    hosts:
-      - login-test.kohmis.fi
+  authentik:
+    postgresql:
+      name: authentik_alpha
+  server:
+    ingress:
+      hosts:
+        - login-test.kohmis.fi
