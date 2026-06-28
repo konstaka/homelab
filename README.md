@@ -117,6 +117,21 @@ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.pas
 
 Use the IP address of the ArgoCD service to access the tool. Change the admin password.
 
+### Namespaces and secrets
+
+Create necessary namespaces so that we can pre-supply some secrets to the cluster:
+
+```
+kubectl create ns cronjobs
+kubectl create ns authentik
+```
+
+For lack of a better secrets management system, put the deSEC token and Authentik's secrets into a gitignored values.yaml file and apply it to the cluster:
+
+```
+helm template secrets -f private/credentials.yaml | kubectl apply -f -
+```
+
 ### Deploy App of Apps
 
 Kick off the GitOps loop with:
@@ -137,12 +152,6 @@ curl 10.0.140.12
 ### Cluster-level cert management
 
 I have a custom cronjob to keep my private-facing certificates fresh, with mild inspiration from [this solution](https://github.com/nabsul/k8s-letsencrypt). I use deSEC for DNS and make use of DNS-01 with [zone delegation](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge). It's not pretty, it gets the job done, it's hopefully one of those temporary solutions that don't actually ever need any further attention.
-
-To get started, for lack of a better secrets management system, put the deSEC token into a gitignored values.yaml file and apply it to the cluster:
-
-```
-helm template secrets -f private/acme-creds.yaml | kubectl apply -f -
-```
 
 The certbot job is idempotent (though beware of Let's Encrypt rate limits - try first with the staging flag set). Launch it once manually to create the first certificate, either from the ArgoCD UI or by running:
 

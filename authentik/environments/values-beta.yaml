@@ -1,0 +1,7 @@
+authentik:
+  postgresql:
+    name: authentik_beta
+server:
+  ingress:
+    hosts:
+      - login.kohmis.fi

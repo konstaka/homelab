@@ -1,1 +1,4 @@
 cluster: beta
+
+featureFlags:
+  authentik: false

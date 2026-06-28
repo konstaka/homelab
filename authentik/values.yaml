@@ -1,0 +1,35 @@
+authentik:
+  authentik:
+    secret_key: file:///authentik-creds/secret_key
+    postgresql:
+      host: postgres.internal
+      user: file:///authentik-creds/pg_user
+      password: file:///authentik-creds/pg_pass
+    email:
+      from: "Authentik authentik@pilvi.kohmis.fi"
+      host: prod-mta-05.swg-srv.net
+      username: file:///authentik-creds/email_user
+      password: file:///authentik-creds/email_pass
+      port: 2525
+
+  server:
+    ingress:
+      enabled: true
+    volumes:
+      - name: authentik-creds
+        secret:
+          secretName: authentik-creds
+    volumeMounts:
+      - name: authentik-creds
+        mountPath: /authentik-creds
+        readOnly: true
+
+  worker:
+    volumes:
+      - name: authentik-creds
+        secret:
+          secretName: authentik-creds
+    volumeMounts:
+      - name: authentik-creds
+        mountPath: /authentik-creds
+        readOnly: true
