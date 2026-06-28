@@ -3,7 +3,7 @@ authentik:
     postgresql:
       name: authentik_alpha
     email:
-      from: "Authentik Test <authentik@cloud.konstakanniainen.dev>"
+      from: "Authentik dev <authentik@cloud.konstakanniainen.dev>"
 
   server:
     ingress:
