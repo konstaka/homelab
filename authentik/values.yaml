@@ -6,11 +6,12 @@ authentik:
       user: file:///authentik-creds/pg_user
       password: file:///authentik-creds/pg_pass
     email:
-      from: "Authentik authentik@pilvi.kohmis.fi"
+      from: "Authentik <authentik@pilvi.kohmis.fi>"
       host: prod-mta-05.swg-srv.net
       username: file:///authentik-creds/email_user
       password: file:///authentik-creds/email_pass
       port: 2525
+      use_tls: true
 
   server:
     ingress:
