@@ -1,4 +1,4 @@
 certbot:
   enabled: true
   domain: kohmis.fi
-  staging: false
+  staging: true
