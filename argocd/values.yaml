@@ -1,4 +1,4 @@
-gitBaseURL: http://dock.internal
+gitBaseURL: https://forge.konstakanniainen.dev:444
 gitNamespace: konstaka
 
 argo-cd:

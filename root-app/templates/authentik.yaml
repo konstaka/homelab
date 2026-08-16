@@ -8,7 +8,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   source:
-    repoURL: http://dock.internal/konstaka/homelab.git
+    repoURL: https://forge.konstakanniainen.dev:444/konstaka/homelab.git
     path: authentik
     targetRevision: HEAD
     helm:
