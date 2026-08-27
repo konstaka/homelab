@@ -1,5 +1,0 @@
-csi-driver-nfs:
-  storageClass:
-    parameters:
-      server: storage1.internal
-      share: /data/k8s
