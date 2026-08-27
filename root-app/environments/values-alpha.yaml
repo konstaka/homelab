@@ -2,4 +2,4 @@ cluster: alpha
 
 featureFlags:
   authentik: false
-  longhorn: false
+  longhorn: true
