@@ -1,0 +1,9 @@
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn-fast
+volumeType: disk
+provisioning:
+  diskSelector:
+    match: disk.dev_path == "/dev/sdb"
+mount:
+  disableAccessTime: true

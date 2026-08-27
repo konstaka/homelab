@@ -1,0 +1,9 @@
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn-slow
+volumeType: disk
+provisioning:
+  diskSelector:
+    match: disk.dev_path == "/dev/sdc"
+mount:
+  disableAccessTime: true
