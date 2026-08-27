@@ -1,5 +1,7 @@
 longhorn:
   defaultSettings:
     defaultDataPath: /var/mnt/longhorn-slow
+  persistence:
+    reclaimPolicy: Retain
   preUpgradeChecker:
     jobEnabled: false
