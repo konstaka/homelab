@@ -2,4 +2,3 @@ jellyfin:
   persistence:
     media:
       size: "5Gi"
-  replicaCount: 2
