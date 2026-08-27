@@ -1,0 +1,4 @@
+jellyfin:
+  persistence:
+    media:
+      size: "5Gi"
