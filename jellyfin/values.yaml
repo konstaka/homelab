@@ -1,10 +1,5 @@
 jellyfin:
   persistence:
-    cache:
-      accessMode: "ReadWriteMany"
-    config:
-      accessMode: "ReadWriteMany"
     media:
       size: "5Gi"
-      accessMode: "ReadWriteMany"
   replicaCount: 2
