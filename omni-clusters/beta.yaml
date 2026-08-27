@@ -31,3 +31,5 @@ patches:
               - 10.0.40.0/24
 systemExtensions:
   - siderolabs/qemu-guest-agent
+  - siderolabs/iscsi-tools
+  - siderolabs/util-linux-tools
