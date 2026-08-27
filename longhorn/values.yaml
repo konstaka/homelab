@@ -1,0 +1,3 @@
+longhorn:
+  defaultSettings:
+    defaultDataPath: /var/mnt/longhorn-slow
