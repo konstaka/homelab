@@ -18,5 +18,16 @@ kind: Workers
 machineClass:
   name: beta-worker
   size: 3
+patches:
+  - file: patches/workers-install-disk.yaml
+  - file: patches/longhorn-fast.yaml
+  - file: patches/longhorn-slow.yaml
+  - name: kubelet-ip
+    inline:
+      machine:
+        kubelet:
+          nodeIP:
+            validSubnets:
+              - 10.0.40.0/24
 systemExtensions:
   - siderolabs/qemu-guest-agent

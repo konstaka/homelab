@@ -11,5 +11,15 @@ spec:
       sockets: 1
       memory: 4096
       disk_size: 60
+      disk_discard: true
       network_bridge: vlan40
       storage_selector: name == "local-zfs3"
+      additional_disks:
+        - disk_size: 40
+          disk_discard: true
+          storage_selector: name == "local-lvm"
+        - disk_size: 100
+          disk_discard: true
+          storage_selector: name == "local-zfs3"
+      additional_nics:
+        - bridge: vmbr2
