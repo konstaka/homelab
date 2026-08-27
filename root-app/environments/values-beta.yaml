@@ -2,4 +2,4 @@ cluster: beta
 
 featureFlags:
   authentik: false
-  longhorn: false
+  longhorn: true
