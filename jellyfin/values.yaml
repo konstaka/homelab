@@ -6,15 +6,15 @@ jellyfin:
     - name: series
       nfs:
         server: 192.168.3.98
-        path: /media/series
+        path: /tank/data/media/series
     - name: movies
       nfs:
         server: 192.168.3.98
-        path: /media/movies
+        path: /tank/data/media/movies
     - name: radio
       nfs:
         server: 192.168.3.98
-        path: /media/radio
+        path: /tank/data/media/radio
   volumeMounts:
     - mountPath: /series
       name: series
