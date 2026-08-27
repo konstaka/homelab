@@ -2,3 +2,26 @@ jellyfin:
   persistence:
     media:
       size: "5Gi"
+  volumes:
+    - name: series
+      nfs:
+        server: 192.168.3.98
+        path: /media/series
+    - name: movies
+      nfs:
+        server: 192.168.3.98
+        path: /media/movies
+    - name: radio
+      nfs:
+        server: 192.168.3.98
+        path: /media/radio
+  volumeMounts:
+    - mountPath: /series
+      name: series
+      readOnly: true
+    - mountPath: /movies
+      name: movies
+      readOnly: true
+    - mountPath: /radio
+      name: radio
+      readOnly: true
