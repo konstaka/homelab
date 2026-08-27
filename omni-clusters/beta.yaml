@@ -1,9 +1,11 @@
 kind: Cluster
 name: beta
 kubernetes:
-  version: v1.35.4
+  version: v1.36.4
 talos:
-  version: v1.12.7
+  version: v1.13.9
+features:
+  useEmbeddedDiscoveryService: true
 ---
 kind: ControlPlane
 machineClass:
