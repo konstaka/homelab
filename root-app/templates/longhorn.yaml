@@ -1,0 +1,27 @@
+{{ if .Values.featureFlags.longhorn }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  source:
+    repoURL: https://forge.konstakanniainen.dev:444/konstaka/homelab.git
+    path: longhorn
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - "values.yaml"
+  destination:
+    namespace: longhorn-system
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{ end }}
