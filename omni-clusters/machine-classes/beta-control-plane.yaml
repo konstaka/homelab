@@ -11,5 +11,6 @@ spec:
       sockets: 1
       memory: 4096
       disk_size: 40
+      disk_discard: true
       network_bridge: vlan40
       storage_selector: name == "local-lvm"
