@@ -1,0 +1,22 @@
+{{ if .Values.jellyfin.persistence.media.existingClaim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: jellyfin:/PersistentVolumeClaim:jellyfin/jellyfin-media
+    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    volume.kubernetes.io/storage-provisioner: driver.longhorn.io
+  finalizers:
+    - kubernetes.io/pvc-protection
+  name: jellyfin-media
+  namespace: jellyfin
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem
+  volumeName: {{ .Values.media.existingVolumeName }}
+{{ end }}
