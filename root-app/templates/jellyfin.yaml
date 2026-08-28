@@ -14,6 +14,7 @@ spec:
     helm:
       valueFiles:
         - "values.yaml"
+        - "environments/values-{{ .Values.cluster }}.yaml"
   destination:
     namespace: jellyfin
     server: https://kubernetes.default.svc
