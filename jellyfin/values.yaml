@@ -1,7 +1,10 @@
 jellyfin:
   persistence:
+    config:
+      existingClaim: "jellyfin-config"
     media:
       size: "5Gi"
+      #existingClaim: "jellyfin-media"
   volumes:
     - name: series
       nfs:
