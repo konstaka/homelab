@@ -1,5 +1,10 @@
 cluster: beta
 
 featureFlags:
-  longhorn: true
+  argocd: true
+  cronjobs: true
+  helloworld: true
   jellyfin: false
+  longhorn: true
+  rootApp: true
+  traefik: true
