@@ -17,7 +17,7 @@ systemExtensions:
 kind: Workers
 machineClass:
   name: beta-worker
-  size: 3
+  size: 2
 patches:
   - file: patches/workers-install-disk.yaml
   - file: patches/longhorn-fast.yaml
