@@ -9,7 +9,7 @@ spec:
     providerdata: |
       cores: 2
       sockets: 1
-      memory: 4096
+      memory: 6144
       disk_size: 40
       disk_discard: true
       network_bridge: vlan40

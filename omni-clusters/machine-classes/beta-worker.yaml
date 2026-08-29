@@ -7,9 +7,9 @@ spec:
   autoprovision:
     providerid: pve2
     providerdata: |
-      cores: 4
+      cores: 2
       sockets: 1
-      memory: 16384
+      memory: 8192
       disk_size: 60
       disk_discard: true
       network_bridge: vlan40
