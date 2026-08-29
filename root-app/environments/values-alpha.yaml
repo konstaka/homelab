@@ -1,6 +1,5 @@
 cluster: alpha
 
 featureFlags:
-  authentik: false
   longhorn: true
   jellyfin: true
