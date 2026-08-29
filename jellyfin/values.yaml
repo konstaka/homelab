@@ -25,3 +25,12 @@ jellyfin:
     - mountPath: /radio
       name: radio
       readOnly: true
+  ingress:
+    enabled: true
+    annotations:
+      traefik.ingress.kubernetes.io/router.middlewares: jellyfin-buffering@kubernetescrd
+    hosts:
+      - host: jellyfin.kohmis.fi
+        paths:
+          - path: /
+            pathType: Prefix
