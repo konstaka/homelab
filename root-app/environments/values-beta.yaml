@@ -4,7 +4,7 @@ featureFlags:
   argocd: true
   cronjobs: true
   helloworld: true
-  jellyfin: true
-  longhorn: true
+  jellyfin: false
+  longhorn: false
   rootApp: true
   traefik: true
