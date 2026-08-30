@@ -5,6 +5,3 @@ longhorn:
     reclaimPolicy: Retain
   preUpgradeChecker:
     jobEnabled: false
-  defaultBackupStore:
-    backupTarget: s3://pvc-backups@us-east-1/
-    backupTargetCredentialSecret: longhorn-backups-s3
