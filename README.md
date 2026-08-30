@@ -1,6 +1,6 @@
 # Homelab GitOps repository
 
-Version-controlled definitions of what's deployed in my homelab, running on a repurposed workstation behind my fridge.
+Version-controlled definitions of what's deployed in my homelab, running on a repurposed HP Z440 workstation.
 
 I'm a software engineer. Little attention has been (or will be) paid on optimal hardware, or network setup: My goal is simply to have an as-complete-as-possible cloud Kubernetes sandbox with the least effort possible. I'm mainly interested in what comes after I get a kubeconfig.
 
@@ -20,35 +20,36 @@ I like to keep things reproducible. Therefore, I try to keep all versions of eve
 
 ## Clusters: All cattle, no pets
 
-I currently operate two 3+3 node clusters, each designated for a different type of connectivity: one which I can expose to friends&family via a reverse proxy, and one which is only accessible from my tailnet. Both clusters are managed declaratively with Omni.
+I recently downsized from two to one 3+3 node cluster to cut down on management overhead and compute resources. The pattern stays the same: Everything in git, Omni, cluster templates, ArgoCD app-of-apps. These architecture decisions have already proven themselves as I have played around, recycled all of the nodes without ever shutting down the cluster, going from 3 control plane nodes to 5 and back again, getting up close and familiar with the cluster templating.
+
+One note that I will leave for anyone who considers the same setup: Try something else than OPNsense+MetalLB-BGP for routing. I had a hard time automating node IP changes and ended up updating them manually in OPNsense each time a new node was provisioned. I have since heard that Cilium might be a better pick over MetalLB. Maybe I'll try it at some point. This current setup works fine otherwise so I'm not in a rush to switch, just need to remember this one footgun.
 
 ## Network architecture
 
-VLANs and firewall rules are defined in OPNsense. Proxmox SDN makes it easier to allocate each VM a NIC in the correct network. The host, the firewall, and one infra VM get access to the trunk. The rest will go in VLANs.
+VLANs and firewall rules are defined in OPNsense. Proxmox SDN makes it easier to allocate each VM a NIC in the correct network. The host, the router, and the infra VM get access to the trunk. The rest will go in VLANs. Additionally, there's a completely separate bridge serving NFS shares from the host to the worker nodes for bulk media and backup storage.
 
 ```mermaid
 architecture-beta
     group pve(server)[pve]
-    group lab2(internet)[lab2] in pve
+    group trunk(server)[trunk] in pve
+
+    service opnsense(internet)[opnsense] in trunk
+
+    service infra_provider(cloud)[infra_provider] in trunk
+    service omni(cloud)[omni] in trunk
+    service forgejo(cloud)[forgejo] in trunk
+
     group lab1(internet)[lab1] in pve
 
-    service opnsense(internet)[opnsense] in pve
-
-    service infra_provider(server)[infra_provider] in pve
-    service omni(cloud)[omni] in pve
-
-    service cluster_alpha(cloud)[cluster_alpha] in lab2
     service cluster_beta(cloud)[cluster_beta] in lab1
-    service forgejo(cloud)[forgejo] in lab1
 
     infra_provider:R -- L:omni
-    omni:T -- B:cluster_beta
-    omni:R -- L:cluster_alpha
+    omni:R -- L:cluster_beta
 ```
 
 ## Setup
 
-If you want to run my clusters, here's how. This also serves as documentation for my future self in case I need to rebuild.
+If you want to run my setup, here's how. This also serves as documentation for my future self in case I need to rebuild.
 
 ### Prerequisites
 
@@ -61,12 +62,12 @@ If you want to run my clusters, here's how. This also serves as documentation fo
 A (very) high level walkthrough:
 
 1. Install Proxmox
-2. Create three VMs: OPNsense and two Debians
-3. Define VLANs in OPNsense and Proxmox SDN; one of the Debians gets a NIC in the host LAN
-4. Install Docker on the Debian VMs
-5. Set up certbot, Omni, and the infra provider on the VM with host access
-6. Deploy the clusters from `./omni-clusters` with omnictl
-7. Set up Forgejo on the second VM and mirror this repository there
+2. Create two VMs: OPNsense and some Linux with Docker
+3. Define VLANs in OPNsense and Proxmox SDN; the Linux VM gets a NIC in the host LAN
+4. Configure ACME cert automation in Proxmox with necessary automations to deploy the certs to the Docker VM
+5. Set up Forgejo on the VM and mirror this repository there
+6. Setup Omni and the infra provider on the VM
+7. Deploy the cluster(s) from `./omni-clusters` with omnictl
 
 The rest of the steps in this setup are to be repeated for each cluster in the system.
 
@@ -81,7 +82,7 @@ MetalLB is really designed for bare metal environments, but gets the job done in
 3. Install MetalLB to support creating LoadBalancer services in the cluster.
 
    ```
-   kubectl apply -k metallb/installation/overlays/<cluster>
+   kubectl apply -k metallb/installation
    ```
 
 4. Allow it a little bit of time to settle in, then apply the BGP setup.
@@ -105,7 +106,7 @@ ArgoCD's' CRDs exceed the size limit for `kubectl apply`, so `--server-side` is 
 
 ```
 helm dep update argocd
-helm template argocd argocd -n argocd -f argocd/environments/values-<cluster>.yaml | kubectl apply --server-side --force-conflicts -f -
+helm template argocd argocd -n argocd | kubectl apply --server-side --force-conflicts -f -
 ```
 
 Wait for the pods to spin up and get the admin password:
@@ -137,7 +138,7 @@ helm template secrets -f private/credentials.yaml | kubectl apply -f -
 Kick off the GitOps loop with:
 
 ```
-helm template root-app -f root-app/environments/values-<cluster>.yaml | kubectl apply -f -
+helm template root-app | kubectl apply -f -
 ```
 
 The root-app will also watch itself, so any new applications should be registered automatically.
@@ -151,7 +152,7 @@ curl 10.0.140.12
 
 ### Cluster-level cert management
 
-I have a custom cronjob to keep my private-facing certificates fresh, with mild inspiration from [this solution](https://github.com/nabsul/k8s-letsencrypt). I use deSEC for DNS and make use of DNS-01 with [zone delegation](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge). It's not pretty, it gets the job done, it's hopefully one of those temporary solutions that don't actually ever need any further attention.
+I have a custom cronjob to keep my private-facing certificates fresh, with mild inspiration from [this solution](https://github.com/nabsul/k8s-letsencrypt). I use deSEC for DNS and make use of DNS-01 with [zone delegation](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge) for my other domain. It's not pretty, it gets the job done, it's hopefully one of those temporary solutions that don't actually ever need any further attention.
 
 The certbot job is idempotent (though beware of Let's Encrypt rate limits - try first with the staging flag set). Launch it once manually to create the first certificate, either from the ArgoCD UI or by running:
 
@@ -164,13 +165,13 @@ kubectl create job certbot-initial --from cronjob/certbot -n cronjobs
 Create the relevant A records as Unbound DNS overrides in OPNsense and test with:
 
 ```
-curl https://argocd-beta.konstakanniainen.dev
+curl https://argocd.kohmis.fi
 ```
 
 The padlock is happy, we're good to go. Traefik endpoints should also automatically have access to the certificate. Test it with:
 
 ```
-curl https://hello-beta.konstakanniainen.dev
+curl https://hello.kohmis.fi
 ```
 
 ### PVC recovery
