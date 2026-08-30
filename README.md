@@ -123,7 +123,7 @@ Create necessary namespaces so that we can pre-supply some secrets to the cluste
 
 ```
 kubectl create ns cronjobs
-kubectl create ns authentik
+kubectl create ns longhorn-system
 ```
 
 For lack of a better secrets management system, put the deSEC token and Authentik's secrets into a gitignored values.yaml file and apply it to the cluster:
@@ -179,7 +179,16 @@ This setup uses Longhorn for storage. In need of disaster recovery:
 
 1. Use feature flags to turn off services that require persistence
 2. Deploy the rest of the cluster to access Longhorn
-3. Restore the PVs into the cluster, creating namespaces as needed
+3. Restore the PVs into the cluster, creating namespaces as needed. Check:
+
+   ```
+   kubectl get volume -A
+   ...
+   NAMESPACE         NAME                                       DATA ENGINE   STATE      ROBUSTNESS   SCHEDULED   SIZE         NODE   AGE
+   longhorn-system   pvc-46f348e6-33e2-4650-9b66-17eff515155f   v1            detached   unknown                  5368709120          7m56s
+   longhorn-system   pvc-99f8646f-a42a-43e6-96ab-3bd567cec7fc   v1            detached   unknown                  5368709120          7m45s
+   ```
+
 4. If the PV was already in the cluster, but in the Released state, it needs to be made Available:
 
    ```
