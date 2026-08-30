@@ -1,0 +1,27 @@
+{{ if .Values.featureFlags.newt }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: newt
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  source:
+    repoURL: https://forge.konstakanniainen.dev:444/konstaka/homelab.git
+    path: newt
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - "values.yaml"
+  destination:
+    namespace: newt
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{ end }}
