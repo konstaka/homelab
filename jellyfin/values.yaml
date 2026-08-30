@@ -3,13 +3,27 @@ jellyfin:
     media:
       size: "5Gi"
   volumes:
-    - name: media
+    - name: series
       nfs:
         server: 192.168.3.98
-        path: /tank/data/media
+        path: /tank/data/media/series
+    - name: movies
+      nfs:
+        server: 192.168.3.98
+        path: /tank/data/media/movies
+    - name: radio
+      nfs:
+        server: 192.168.3.98
+        path: /tank/data/media/radio
   volumeMounts:
-    - mountPath: /media
-      name: media
+    - mountPath: /series
+      name: series
+      readOnly: true
+    - mountPath: /movies
+      name: movies
+      readOnly: true
+    - mountPath: /radio
+      name: radio
       readOnly: true
   ingress:
     enabled: true
