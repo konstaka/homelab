@@ -28,8 +28,6 @@ One note that I will leave for anyone who considers the same setup: Try somethin
 
 VLANs and firewall rules are defined in OPNsense. Proxmox SDN makes it easier to allocate each VM a NIC in the correct network. The host, the router, and the infra VM get access to the trunk. The rest will go in VLANs. Additionally, there's a completely separate bridge serving NFS shares from the host to the worker nodes for bulk media and backup storage.
 
-I have Pangolin installed on an external VPS, where my public DNS records are also pointed. By installing Newt in the cluster, we can expose its services to the internet through Pangolin in addition to the local Traefik.
-
 ```mermaid
 architecture-beta
     group pve(server)[pve]
