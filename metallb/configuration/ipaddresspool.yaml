@@ -3,5 +3,6 @@ kind: IPAddressPool
 metadata:
   name: servicepool
 spec:
-  addresses: []
+  addresses:
+    - 10.0.140.0/24
   avoidBuggyIPs: true

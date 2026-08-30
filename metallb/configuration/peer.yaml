@@ -3,6 +3,6 @@ kind: BGPPeer
 metadata:
   name: router
 spec:
-  peerAddress:
-  peerASN:
-  myASN:
+  peerAddress: 10.0.40.1
+  peerASN: 65552
+  myASN: 64514
