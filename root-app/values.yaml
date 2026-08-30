@@ -4,6 +4,5 @@ featureFlags:
   helloworld: true
   jellyfin: true
   longhorn: true
-  newt: true
   rootApp: true
   traefik: true
