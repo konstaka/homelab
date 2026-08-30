@@ -172,3 +172,21 @@ The padlock is happy, we're good to go. Traefik endpoints should also automatica
 ```
 curl https://hello-beta.konstakanniainen.dev
 ```
+
+### PVC recovery
+
+This setup uses Longhorn for storage. In need of disaster recovery:
+
+1. Use feature flags to turn off services that require persistence
+2. Deploy the rest of the cluster to access Longhorn
+3. Restore the PVs into the cluster, creating namespaces as needed
+4. If the PV was already in the cluster, but in the Released state, it needs to be made Available:
+
+   ```
+   kubectl patch pv pvc-c4787398-a167-4fff-a262-0ef2df254443 -p '{"spec":{"claimRef": null}}'
+   ```
+
+5. Modify the PV names in Helm values as needed
+6. Turn the services back on. The PVCs should be created automatically and bound to the PVs.
+
+If setting up a pristine cluster, create new PVCs as required by each service. For example, remove the existingClaim rows from jellyfin's values.yaml, and it will create new volumes automatically. Once you have the volume names, plug them into values.yaml and redeploy to see that it now uses those pre-defined PVCs.
