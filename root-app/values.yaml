@@ -1,0 +1,8 @@
+featureFlags:
+  argocd: true
+  cronjobs: true
+  helloworld: true
+  jellyfin: true
+  longhorn: true
+  rootApp: true
+  traefik: true

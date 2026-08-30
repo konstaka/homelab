@@ -1,4 +1,7 @@
 traefik:
+  service:
+    annotations:
+      metallb.io/loadBalancerIPs: 10.0.140.12
   tlsStore:
     default:
       defaultCertificate:

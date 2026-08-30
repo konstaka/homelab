@@ -1,4 +1,4 @@
 namespace: cronjobs
 certbot:
-  domain: example.com
-  staging: true
+  domain: kohmis.fi
+  staging: false
