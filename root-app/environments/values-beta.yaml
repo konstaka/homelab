@@ -5,6 +5,6 @@ featureFlags:
   cronjobs: true
   helloworld: true
   jellyfin: false
-  longhorn: false
+  longhorn: true
   rootApp: true
   traefik: true
