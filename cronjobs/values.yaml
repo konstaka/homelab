@@ -1,5 +1,4 @@
 namespace: cronjobs
 certbot:
-  enabled: false
   domain: example.com
   staging: true
