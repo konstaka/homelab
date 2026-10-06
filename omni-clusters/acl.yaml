@@ -1,0 +1,41 @@
+metadata:
+  namespace: default
+  type: AccessPolicies.omni.sidero.dev
+  id: access-policy
+spec:
+  clustergroups:
+    dev:
+      clusters:
+        - match: alpha*
+    prod:
+      clusters:
+        - match: beta*
+    temp:
+      clusters:
+        - match: gamma*
+  rules:
+    - users:
+        - admin@omni.internal
+      clusters:
+        - group/dev
+        - group/prod
+        - group/temp
+      role: Admin
+    - users:
+        - acl-test@serviceaccount.omni.sidero.dev
+      clusters:
+        - group/dev
+      role: Admin
+    - users:
+        - acl-test@serviceaccount.omni.sidero.dev
+      clusters:
+        - group/temp
+      role: Reader
+  tests:
+    - name: admin has full access to beta cluster
+      user:
+        name: admin@omni.internal
+      cluster:
+        name: beta
+      expected:
+        role: Admin

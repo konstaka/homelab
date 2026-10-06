@@ -1,0 +1,15 @@
+kind: Cluster
+name: alpha
+kubernetes:
+  version: v1.36.4
+talos:
+  version: v1.13.9
+features:
+  useEmbeddedDiscoveryService: true
+---
+kind: ControlPlane
+machineClass:
+  name: alpha-control-plane
+  size: 1
+systemExtensions:
+  - siderolabs/qemu-guest-agent
