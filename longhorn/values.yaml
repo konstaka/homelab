@@ -6,4 +6,4 @@ longhorn:
   preUpgradeChecker:
     jobEnabled: false
   defaultBackupStore:
-    backupTarget: "nfs://192.168.3.98:/tank/backups/pvc?nfsOptions=rw,nolock"
+    backupTarget: "nfs://10.0.20.10:/tank/backups/pvc?nfsOptions=rw,nolock"
